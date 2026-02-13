@@ -1,27 +1,30 @@
 const yesBtn = document.getElementById("yesBtn");
 const noBtn = document.getElementById("noBtn");
 
-let sizeIncrement = 1.1;  // Growth scale
-let clickCount = 0;
+let scale = 1;
 
 yesBtn.addEventListener("click", () => {
-    clickCount++;
-  
-    // Increase yes button size
-    let style = window.getComputedStyle(yesBtn);
-    let width = parseFloat(style.width);
-    let height = parseFloat(style.height);
+  scale += 0.25;
+  yesBtn.style.transform = `scale(${scale})`;
 
-    yesBtn.style.width  = (width * sizeIncrement) + "px";
-    yesBtn.style.height = (height * sizeIncrement) + "px";
+  const yesRect = yesBtn.getBoundingClientRect();
+  const noRect = noBtn.getBoundingClientRect();
 
-    // Move NO button away a bit
-    if (noBtn) {
-        noBtn.style.marginLeft = `${clickCount * 15}px`;
-    }
+  // If YES overlaps or gets close, move NO away
+  if (
+    yesRect.right >= noRect.left - 10 ||
+    yesRect.width > 250
+  ) {
+    const randomX = Math.random() * 120 - 60;
+    const randomY = Math.random() * 120 - 60;
 
-    // Hide NO when YES is big
-    if (width > 300) {
-        noBtn.style.display = "none";
-    }
+    noBtn.style.transform = `translate(${randomX}px, ${randomY}px)`;
+  }
+
+  // Optional: hide NO if YES becomes massive
+  if (scale > 3.5) {
+    noBtn.style.opacity = "0";
+    noBtn.style.pointerEvents = "none";
+  }
 });
+
